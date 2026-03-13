@@ -3,62 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <title>Rick and Morty</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
 <body>
 
-<h1>Rick and Morty</h1>
+<header class="flex justify-between items-center px-12 h-20 shadow-md">
+    <a href="/">
+        <img src="/static/images/Rick_and_Morty.svg.png" alt="logo" class="h-15">
+    </a>
 
-<!-- Formulario simple para interceder por peticiones GET enviando parámetros de búsqueda textual -->
-<form method="get">
-    <input type="text" name="name" placeholder="Search character">
-    <button type="submit">Search</button>
-    <a href="/">Inicio</a>
-    <a href="/favorites">Favorites</a>
-</form>
+    <!-- Formulario simple para interceder por peticiones GET enviando parámetros de búsqueda textual -->
+    <form method="get">
+        <input type="text" name="name" placeholder="Search character" class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Search</button>
+        <a href="/" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition">Inicio</a>
+        <a href="/favorites" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition">Favorites</a>
+    </form>
+</header>
 
-<hr>
-{% if error_message %}
-<p style="color: red; font-weight: bold;">{{ error_message }}</p>
-{% endif %}
+<main class="bg-gray-500/25 mx-auto p-15">
+    <ul class=" pl-12 grid grid-cols-4 gap-4 rounded-3xl">
+    {% for c in characters %}
+        <li class="bg-white rounded-xl shadow-md hover:shadow-xl hover:scale-105 transition text-center">
+            <strong>{{ c.name }}</strong><br>
+            Status: {{ c.status }}<br>
+            Species: {{ c.species }}<br>
+            Origin: {{ c.origin.name }}<br>
+            <img src="{{ c.image }}" width="120" class="mx-auto rounded-xl"><br>
+            <!-- Formulario imperativo y oculto responsable de emitir POST integrales referenciando parámetros del personaje para registrarse de forma exitosa -->
+            <form method="post" action="/save">
+                <input type="hidden" name="api_id" value="{{ c.id }}">
+                <input type="hidden" name="name" value="{{ c.name }}">
+                <input type="hidden" name="image" value="{{ c.image }}">
+                <input type="hidden" name="page" value="{{ page }}">
+                <button type="submit" class="bg-cyan-500 text-black px-3 py-1 rounded hover:bg-cyan-700 transition">Guardar</button>
+            </form>
+        </li>
+    {% endfor %}
+    </ul>
+</main>
 
-<ul>
-{% for c in characters %}
-    <li>
-        <strong>{{ c.name }}</strong><br>
-        Status: {{ c.status }}<br>
-        Species: {{ c.species }}<br>
-        Origin: {{ c.origin.name }}<br>
-        <img src="{{ c.image }}" width="120"><br>
-
-        <!-- Formulario imperativo y oculto responsable de emitir POST integrales referenciando parámetros del personaje para registrarse de forma exitosa -->
-        <form method="post" action="/save">
-            <input type="hidden" name="api_id" value="{{ c.id }}">
-            <input type="hidden" name="name" value="{{ c.name }}">
-            <input type="hidden" name="image" value="{{ c.image }}">
-            <input type="hidden" name="page" value="{{ page }}">
-            <button type="submit">Guardar</button>
-        </form>
-    </li>
-
-    <hr>
-{% endfor %}
-</ul>
-
-<!-- Lógica condicional: Únicamente renderizar componentes de interactividad de paginación si se listaron bajo una modalidad por defecto sin interacciones de búsqueda ('search' false). -->
-{% if not search %}
-    <!-- Enlace regresivo correspondiente al punto del atributo prev enviado directo de la información provista por la jerarquía en la clave info -->
-    {% if info.prev %}
-        <a href="/?page={{ page - 1 }}">Previous</a>
+<footer class="flex items-center px-12 h-20 shadow-md">
+    {% if error_message %}
+    <p>{{ error_message }}</p>
     {% endif %}
-    
-    <!-- Impresión tangible de posición sobre número de la página -->
-    Page {{ page }}
-    
-    <!-- Enlace iterativo correspondiente hacia adición posicional originado del atributo 'next' en la misma estructura paramétrica -->
-    {% if info.next %}
-        <a href="/?page={{ page + 1 }}">Next</a>
+
+    <!-- Lógica condicional: Únicamente renderizar componentes de interactividad de paginación si se listaron bajo una modalidad por defecto sin interacciones de búsqueda ('search' false). -->
+    {% if not search %}
+        <!-- Enlace regresivo correspondiente al punto del atributo prev enviado directo de la información provista por la jerarquía en la clave info -->
+        {% if info.prev %}
+            <a href="/?page={{ page - 1 }}" class="bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition">Previous</a>
+        {% endif %}
+        
+        <!-- Impresión tangible de posición sobre número de la página -->
+        Page {{ page }}
+        
+        <!-- Enlace iterativo correspondiente hacia adición posicional originado del atributo 'next' en la misma estructura paramétrica -->
+        {% if info.next %}
+            <a href="/?page={{ page + 1 }}" class="bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition">Next</a>
+        {% endif %}
     {% endif %}
-{% endif %}
+</footer>
 
 </body>
 </html>
