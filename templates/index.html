@@ -23,9 +23,9 @@
 </header>
 
 <main class="bg-gray-500/25 mx-auto p-15">
-    <ul class=" pl-12 grid grid-cols-4 gap-4 rounded-3xl">
+    <ul class=" p-12 grid grid-cols-4 gap-4 rounded-3xl text-sm">
     {% for c in characters %}
-        <li class="bg-white rounded-xl shadow-md hover:shadow-xl hover:scale-105 transition text-center">
+        <li class="bg-white rounded-xl shadow-xl hover:shadow-xl hover:scale-105 transition text-center">
             <strong>{{ c.name }}</strong><br>
             Status: {{ c.status }}<br>
             Species: {{ c.species }}<br>
